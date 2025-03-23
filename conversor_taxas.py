@@ -1,7 +1,7 @@
 import streamlit as st
 import math
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 # ---------------- FUNÇÕES PRINCIPAIS ---------------- #
 
@@ -124,13 +124,8 @@ with aba[0]:
             st.dataframe(df_valores, use_container_width=True)
 
             st.subheader("📈 Gráfico da Evolução do Investimento")
-            fig, ax = plt.subplots()
-            ax.plot(df_valores["Dia Útil"], df_valores["Valor Acumulado"], linewidth=2)
-            ax.set_title("Evolução do Valor Investido", fontsize=14)
-            ax.set_xlabel("Dia Útil")
-            ax.set_ylabel("Valor Acumulado (R$)")
-            ax.grid(True)
-            st.pyplot(fig)
+            fig = px.line(df_valores, x="Dia Útil", y="Valor Acumulado", title="Evolução do Valor Investido")
+            st.plotly_chart(fig, use_container_width=True)
 
 # ----------- ABA 2: CONVERSOR DE TAXAS ----------- #
 
@@ -191,12 +186,6 @@ with aba[2]:
         st.dataframe(df_alocacao, use_container_width=True)
 
         st.subheader("📈 Gráfico de Alocação")
-        fig, ax = plt.subplots()
-        ax.pie(
-            [item["Valor Alocado (R$)"] for item in dados],
-            labels=[item["Ativo"] for item in dados],
-            autopct='%1.1f%%',
-            startangle=90
-        )
-        ax.axis('equal')
-        st.pyplot(fig)
+        df_pizza = pd.DataFrame(dados)
+        fig = px.pie(df_pizza, values="Valor Alocado (R$)", names="Ativo", title="Distribuição da Carteira")
+        st.plotly_chart(fig, use_container_width=True)
